@@ -1,0 +1,11 @@
+# файл конфигурации для локальной среды разработки, нужен чтобы переопределить настройки по умолчанию
+# local.yaml 
+env: "local" # local, development, staging, production
+storage path: "./storage/storage.db"
+CONFIG_VERSION: 1
+
+
+http_server:
+  adress: "localhost:1488"
+  timeout: 4s
+  idle_timeout: 60s
