@@ -10,7 +10,7 @@ import ( // импортируем необходимые пакеты
 )
 
 type Config struct {
-	Env         string               `yaml:"env" env-default:"local"` // необходим для определения окружения приложения
+	Env         string               `yaml:"env" env-default:"local"` // необходим для определения окружени приложения
 	StoragePath string               `yaml:"storage_path"`            // путь до файла с хранилищем
 	HTTPServer  `yaml:"http_server"` // адрес внешнего HTTP сервера
 }
@@ -24,7 +24,7 @@ type HTTPServer struct {
 
 func MustLoad() Config { // функция для загрузки конфигурации приложения
 	config := os.Getenv("CONFIG_PATH")
-	if config == "" { // если переменная окружения не установлена - падаем
+	if config == "" { // если переменная окружения не установлена - падаем, чтобы добавить переменную окружения сделайте export CONFIG_PATH=path/to/config.yaml
 		log.Fatal("CONFIG_PATH env variable is not set")
 	}
 	if _, err := os.Stat(config); os.IsNotExist(err) { // если файл не существует - падаем
