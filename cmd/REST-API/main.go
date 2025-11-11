@@ -1,27 +1,41 @@
 package main
 
 import (
+	//"fmt"
+	//"html/template"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	//"github.cob/gorilla/websocket"
 )
 
 func main() {
-	// Create a Gin router with default middleware (logger and recovery)
-	r := gin.Default()
+	//TODO: развернуть http сервер с использованием Gin
+	//TODO: сделать форму для принятия сообщений
+	//TODO: сделать отправку сообщений в окно браузера с использованием WebSocket
 
-	// Define a simple GET endpoint
-	r.GET("/ping", func(c *gin.Context) {
-		// Return JSON response
+	server := gin.Default()
+	gin.SetMode(gin.DebugMode)
+
+	/*tmpl, err := template.ParseFiles("templates/index.html")
+	if err != nil {
+		// обработка ошибки
+		log.Fatalf("failed to parse template: %v", err)
+	}*/
+
+	server.GET("/a", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", gin.H{})
+	})
+
+	server.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
+			"message": "Hello, World!",
 		})
 	})
 
-	// Start server on port 8080 (default)
-	// Server will listen on 0.0.0.0:8080 (localhost:8080 on Windows)
-	if err := r.Run(); err != nil {
+	if err := server.Run(); err != nil {
 		log.Fatalf("failed to run server: %v", err)
 	}
+
 }
