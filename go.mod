@@ -1,6 +1,8 @@
-module REST-API
+module github.com/MIrrox27/REST-API
 
 go 1.25.3
+
+
 
 require (
 	github.com/BurntSushi/toml v1.2.1 // indirect
