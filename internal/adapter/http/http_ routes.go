@@ -1,5 +1,6 @@
 package http
 
+/*
 import (
 	"log"
 	//"net/http"
@@ -7,17 +8,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// этот файл нужен для настройки маршрутов
+func httpRoutMain(indexPath string, r *gin.Engine) {
 
-func httpRouter(indexPath string, r *gin.Engine) { // входящие параметры: r - роутер Gin (передадим через Router()), indexPath - путь к index.html
-	// здесь будут настраиваться маршруты
-	log.Println(indexPath)
-	r.LoadHTMLFiles(indexPath)
-
-	r.GET("/", func(c *gin.Context) {
+	r.GET("/", func(c *gin.Context) { // маршрут "/"
 		//c.HTML(http.StatusOK, "index.tmpl", gin.H{"Author": "Maksim"})
 		c.File(indexPath)
 	})
+
+}
+
+func httpRoutWs(r *gin.Engine) { // маршрут "/ws"
 
 	r.GET("/ws", func(c *gin.Context) {
 
@@ -54,3 +54,4 @@ func httpRouter(indexPath string, r *gin.Engine) { // входящие пара�
 	})
 
 }
+*/

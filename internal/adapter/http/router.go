@@ -1,6 +1,6 @@
 package http
 
-// этот файл нужен для инициализации роутера и настройки маршрутов
+// этот файл нужен для инициализации роутера
 import (
 	"log"      // логирование ошибок и информации
 	"net/http" // требуется для типов http.Request и http.ResponseWriter
@@ -17,15 +17,13 @@ var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool { return true },
 }
 
-func Router() {
+func Router(indexPath string) {
 	// Router setup code goes here
 
 	r := gin.Default()
 
-	//indexPath := filepath.Join("../../..", "frontend", "templates", "index.html")
-	httpRouter(r)
+	httpRouter(indexPath, r)
 
-	// Запускаем HTTP-сервер на порту 8080; при ошибке — логируем и завершаем программу.
 	if err := r.Run(":8080"); err != nil {
 		log.Fatal(err)
 	}
