@@ -1,34 +1,141 @@
-<!DOCTYPE html>
-<html>
+
+<!doctype html>
+<html lang="ru">
 <head>
-    <title>Простой чат</title>
+  <meta charset="utf-8">
+  <title>Локальный чат</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    /* Минималистичный встроенный CSS */
+    :root{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;font-size:14px}
+    body{margin:0;background:#f5f7fb;display:flex;flex-direction:column;height:100vh}
+    header{padding:12px 16px;background:#2b2f4a;color:#fff;font-weight:600}
+    main{flex:1;display:flex;gap:12px;padding:12px}
+    /* панель сообщений */
+    .chat {flex:1;display:flex;flex-direction:column;border-radius:8px;background:#fff;padding:12px;box-shadow:0 0 0 1px rgba(0,0,0,0.04)}
+    .messages{flex:1;overflow:auto;padding-right:6px}
+    .msg{margin:6px 0;padding:8px 10px;border-radius:6px;max-width:70%;}
+    .msg.you{background:#e6f0ff;align-self:flex-end}
+    .msg.other{background:#f2f4f7;align-self:flex-start}
+    .meta{font-size:12px;color:#6b7280;margin-bottom:6px}
+    /* форма ввода */
+    form{display:flex;gap:8px}
+    input[type="text"]{flex:1;padding:8px;border:1px solid #e6e9ef;border-radius:6px}
+    button{padding:8px 12px;border-radius:6px;border:none;background:#2b2f4a;color:#fff;cursor:pointer}
+    footer{padding:8px 16px;font-size:12px;color:#6b7280;text-align:center}
+    /* компактно на мобильных */
+    @media(max-width:520px){.msg{max-width:86%}}
+  </style>
 </head>
 <body>
-    <h1>Простой чат</h1>
-    
-    <!-- Окно вывода сообщений -->
-    <div style="border: 1px solid #ccc; height: 300px; overflow-y: scroll; padding: 10px; margin-bottom: 20px;">
-        {{range .Messages}}
-            <div>
-                <strong>{{.Author}}:</strong> {{.Text}}
-                <hr>
-            </div>
-        {{else}}
-            <p>Пока нет сообщений. Будьте первым!</p>
-        {{end}}
-    </div>
+  <header>Локальный чат — WebSocket</header>
 
-    <!-- Форма отправки сообщения -->
-    <form method="POST" action="/ws">
-        <div>
-            <label>Имя:</label><br>
-            <input type="text" name="author" placeholder="Введите ваше имя" required style="width: 200px;">
-        </div>
-        <div>
-            <label>Сообщение:</label><br>
-            <textarea name="text" placeholder="Введите ваше сообщение" required style="width: 300px; height: 60px;"></textarea>
-        </div>
-        <button type="submit">Отправить сообщение</button>
-    </form>
+  <main>
+    <div class="chat" id="chat">
+      <div class="messages" id="messages" aria-live="polite"></div>
+
+      <form id="form" action="#" onsubmit="return false;">
+        <input id="name" type="text" placeholder="Ваше имя" value="User" required />
+        <input id="text" type="text" placeholder="Сообщение..." autocomplete="off" required />
+        <button id="send">Отправить</button>
+      </form>
+    </div>
+  </main>
+
+  <footer>Подключение: <span id="status">—</span></footer>
+
+  <script>
+    // Минимально необходимый JS (объяснение ниже)
+    (function(){
+      const statusEl = document.getElementById('status');
+      const messagesEl = document.getElementById('messages');
+      const form = document.getElementById('form');
+      const nameInput = document.getElementById('name');
+      const textInput = document.getElementById('text');
+      const sendBtn = document.getElementById('send');
+
+      // Адрес WebSocket — если сервер на той же машине и порту, где HTML, используем тот же хост
+      const protocol = (location.protocol === 'https:') ? 'wss' : 'ws';
+      const wsUrl = protocol + '://' + location.host + '/ws';
+      let ws;
+
+      function setStatus(s){
+        statusEl.textContent = s;
+      }
+
+      function appendMessage(obj, mine){
+        // obj: {name, text, ts} или просто строка
+        const div = document.createElement('div');
+        div.className = 'msg ' + (mine ? 'you' : 'other');
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+        meta.textContent = (obj.name || 'Anon') + ' • ' + (new Date(obj.ts || Date.now())).toLocaleTimeString();
+        const body = document.createElement('div');
+        body.textContent = obj.text || obj;
+        div.appendChild(meta);
+        div.appendChild(body);
+        messagesEl.appendChild(div);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      function connect(){
+        ws = new WebSocket(wsUrl);
+
+        ws.onopen = function(){
+          setStatus('подключено');
+          // запросить историю при подключении (сервер должен это поддерживать: отправлять историю по запросу)
+          ws.send(JSON.stringify({type:'history_request'}));
+        };
+
+        ws.onmessage = function(evt){
+          try{
+            const data = JSON.parse(evt.data);
+            // поддерживаем два типа: history (массив) и message (один)
+            if(data.type === 'history' && Array.isArray(data.items)){
+              messagesEl.innerHTML = '';
+              data.items.forEach(it => appendMessage(it, (it.sender === nameInput.value)));
+            } else if(data.type === 'message'){
+              appendMessage({name:data.sender, text:data.content, ts:data.ts}, data.sender === nameInput.value);
+            } else {
+              // fallback: если сервер шлёт просто строку
+              appendMessage(data);
+            }
+          } catch(e){
+            // если не JSON — просто добавляем текст
+            appendMessage(evt.data);
+          }
+        };
+
+        ws.onclose = function(){ setStatus('отключено — переподключение через 1s'); setTimeout(connect,1000); };
+        ws.onerror = function(){ setStatus('ошибка'); };
+      }
+
+      // отправка сообщения
+      sendBtn.addEventListener('click', function(){
+        const name = nameInput.value.trim() || 'User';
+        const text = textInput.value.trim();
+        if(!text) return;
+        const payload = {type:'message', sender:name, content:text, ts: Date.now()};
+        if(ws && ws.readyState === WebSocket.OPEN){
+          ws.send(JSON.stringify(payload));
+          // локально показать сообщение сразу
+          appendMessage({name: name, text: text, ts: payload.ts}, true);
+          textInput.value = '';
+          textInput.focus();
+        } else {
+          alert('Нет соединения с сервером');
+        }
+      });
+
+      // Enter для отправки
+      textInput.addEventListener('keydown', function(e){
+        if(e.key === 'Enter'){ e.preventDefault(); sendBtn.click(); }
+      });
+
+      // Запуск
+      setStatus('подключение...');
+      connect();
+    })();
+  </script>
 </body>
 </html>
