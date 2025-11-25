@@ -11,12 +11,12 @@ import (
 	//github.com/gorilla/websocket" // реализация WebSocket
 )
 
-func Router(indexPath string) {
+func Router() {
 	// Router setup code goes here
 
 	r := gin.Default()
 
-	httpRouter(indexPath, r)
+	httpRouter(r)
 
 	if err := r.Run(":8080"); err != nil {
 		log.Fatal(err)

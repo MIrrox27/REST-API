@@ -1,6 +1,8 @@
 package user
 
+// этот файл нужен для описания сущности пользователя
+
 type User struct {
-	ID       string
+	USER_ID  string
 	Username string
 }

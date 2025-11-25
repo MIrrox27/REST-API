@@ -1,7 +1,7 @@
 package http
 
 import (
-	"log"
+
 	//"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,10 +9,8 @@ import (
 
 // этот файл нужен для настройки маршрутов
 
-func httpRouter(indexPath string, r *gin.Engine) { // входящие параметры: r - роутер Gin (передадим через Router()), indexPath - путь к index.html
+func httpRouter(r *gin.Engine) { // входящие параметры: r - роутер Gin (передадим через Router()), indexPath - путь к index.html
 	// здесь будут настраиваться маршруты
-	log.Println(indexPath)
-	r.LoadHTMLFiles(indexPath)
 
 	httpRoutMain(r)
 	httpRoutWs(r)
