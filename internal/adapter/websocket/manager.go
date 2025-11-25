@@ -39,6 +39,7 @@ func WebsocketRoute(c *gin.Context) {
 		}
 		// Логируем полученное сообщение на сервере.
 		log.Printf("recv: %s", message)
+		// записываем его в json файд
 
 		// Отправляем обратно то же сообщение с тем же типом (echo).
 		if err = conn.WriteMessage(mt, message); err != nil {
