@@ -1,25 +1,18 @@
 package http
 
-// этот файл нужен для инициализации роутера
 import (
-	"log" // логирование ошибок и информации
-	//"net/http" // требуется для типов http.Request и http.ResponseWriter
 
-	//"path/filepath" // сборка безопасных путей файловой системы
+	//"net/http"
 
-	"github.com/gin-gonic/gin" // веб-фреймворк Gin
-	//github.com/gorilla/websocket" // реализация WebSocket
+	"github.com/gin-gonic/gin"
 )
 
-func Router() {
-	// Router setup code goes here
+// этот файл нужен для настройки маршрутов
 
-	r := gin.Default()
+func Router(r *gin.Engine) { // входящие параметры: r - роутер Gin (передадим через Router()), indexPath - путь к index.html
+	// здесь будут настраиваться маршруты
 
-	httpRouter(r)
-
-	if err := r.Run(":8080"); err != nil {
-		log.Fatal(err)
-	}
+	httpRoutMain(r)
+	httpRoutWs(r)
 
 }

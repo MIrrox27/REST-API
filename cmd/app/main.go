@@ -52,5 +52,5 @@ func main() {
 	defer db.Close()
 
 	fmt.Println()
-	http.Router()
+	http.NewServer()
 }
