@@ -11,10 +11,10 @@ import (
 	//github.com/gorilla/websocket" // реализация WebSocket
 )
 
-func NewServer() {
+func NewServer() { // в кпараметре получаем
 	// Route	r setup code goes here
 
-	r := gin.New()
+	r := gin.Default()
 
 	Router(r)
 

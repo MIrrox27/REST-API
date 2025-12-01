@@ -14,6 +14,7 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/MIrrox27/REST-API/internal/adapter/http"
+	"github.com/MIrrox27/REST-API/internal/usecase/chat"	
 )
 
 func initDB() *sqlx.DB {
@@ -47,6 +48,7 @@ func initDB() *sqlx.DB {
 func main() {
 
 	db := initDB()
+	h = 
 
 	// 'defer' гарантирует, что соединение будет закрыто, когда main() завершит работу.
 	defer db.Close()

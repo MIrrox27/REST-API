@@ -9,13 +9,11 @@ import (
 )
 
 func httpRoutMain(r *gin.Engine) {
-
 	r.GET("/", func(c *gin.Context) { // маршрут "/"
 		c.JSON(http.StatusOK, gin.H{
 			"message": "хахахаха эта страница не используется",
 		})
 	})
-
 }
 
 func httpRoutWs(r *gin.Engine) { // маршрут "/ws"

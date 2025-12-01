@@ -9,10 +9,10 @@ import (
 
 // этот файл нужен для настройки маршрутов
 
-func Router(r *gin.Engine) { // входящие параметры: r - роутер Gin (передадим через Router()), indexPath - путь к index.html
+func Router(r *gin.Engine) *gin.Engine { // входящие параметры: r - роутер Gin (передадим через Router()), indexPath - путь к index.html
 	// здесь будут настраиваться маршруты
 
 	httpRoutMain(r)
 	httpRoutWs(r)
-
+	return r
 }

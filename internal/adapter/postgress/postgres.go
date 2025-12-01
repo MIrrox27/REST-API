@@ -20,10 +20,6 @@ type PostgresRepo struct {
 	DB *sqlx.DB
 }
 
-func ReadMessages() {
-
-}
-
 func SaveMessages() {
 
 }
