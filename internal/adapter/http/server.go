@@ -9,14 +9,15 @@ import (
 
 	"github.com/gin-gonic/gin" // веб-фреймворк Gin
 	//github.com/gorilla/websocket" // реализация WebSocket
+	"github.com/MIrrox27/REST-API/internal/service"
 )
 
-func NewServer() { // в кпараметре получаем
+func NewServer(h *service.ChatServiceImpl) { // в кпараметре получаем
 	// Route	r setup code goes here
 
 	r := gin.Default()
 
-	Router(r)
+	Router(r, h)
 
 	if err := r.Run(":8080"); err != nil {
 		log.Fatal(err)
