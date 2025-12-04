@@ -4,13 +4,17 @@ package postgress
 
 import (
 	//"database/sql"
+	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
+
 	//"github.com/lib/pq"
 	//"github.com/MIrrox27/REST-API/internal/domain/chat"
+	"github.com/gorilla/websocket"
 )
 
 type PostgresChat interface {
-	ReadMessages(message_id int, message string, user_id int) *string
+	ReadMessages(c *gin.Context, conn *websocket.Conn, message_id int, message string, user_id int) *error
+	HendleMessage(c *gin.Context, conn *websocket.Conn)
 	SaveMessages(message_id int, message string, user_id int)
 }
 
@@ -25,6 +29,21 @@ func SaveMessages() {
 
 }
 
-func ReadMessages() {
+func HendleMessage() {
+
+}
+
+func ReadMessages(c *gin.Context, conn *websocket.Conn) error {
+	for {
+		mt, message, err := conn.ReadMessage()
+		if err != nil {
+			// Обычно клиент закрыл соединение.
+			return err
+		}
+		// Отправляем то же сообщение обратно.
+		if err = conn.WriteMessage(mt, message); err != nil {
+			return err
+		}
+	}
 
 }
