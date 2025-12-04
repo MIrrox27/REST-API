@@ -17,11 +17,5 @@ func httpRoutMain(r *gin.Engine) {
 }
 
 func httpRoutWs(r *gin.Engine) { // маршрут "/ws"
-
-	r.GET("/ws", func(c *gin.Context) {
-
-		websocket.WebsocketRoute(c)
-
-	})
-
+	r.GET("/ws", websocket.WebsocketUpgrader) // апгреидим до вебсокетов
 }

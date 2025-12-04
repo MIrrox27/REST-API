@@ -4,6 +4,7 @@ package websocket
 
 import (
 	//"log"
+
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -23,4 +24,33 @@ var upgrader = websocket.Upgrader{ // создаем апгрейдер
 	},
 }
 
-func WebsocketRoute(c *gin.Context) {} // функцция которая абгрейдит соединение HTTP до WebSocket и обрабатывает сообщения, gorutine
+func WebsocketUpgrader(c *gin.Context) { // функцция которая абгрейдит соединение HTTP до WebSocket и обрабатывает сообщения, gorutine
+
+	// Получаем *http.Request и http.ResponseWriter из контекста Gin.
+	req := c.Request
+	w := c.Writer
+
+	// Выполняем апгрейд.
+	conn, err := upgrader.Upgrade(w, req, nil)
+	if err != nil {
+		// Ошибка обычно происходит, если заголовки не соответствуют протоколу.
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	// Обязательно закрываем соединение при выходе из функции.
+	defer conn.Close()
+
+	// Пример простого эхо‑сервера.
+	for {
+		// Читаем сообщение от клиента.
+		mt, message, err := conn.ReadMessage()
+		if err != nil {
+			// Обычно клиент закрыл соединение.
+			break
+		}
+		// Отправляем то же сообщение обратно.
+		if err = conn.WriteMessage(mt, message); err != nil {
+			break
+		}
+	}
+}

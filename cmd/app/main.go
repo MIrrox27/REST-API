@@ -4,6 +4,7 @@ package main
 
 import (
 	"log" // логирование ошибок и информации
+
 	//"net/http"
 
 	"fmt"
@@ -15,7 +16,7 @@ import (
 
 	"github.com/MIrrox27/REST-API/internal/adapter/http"
 	//"github.com/MIrrox27/REST-API/internal/usecase/chat"
-	"github.com/MIrrox27/REST-API/internal/adapter/postgress"
+	//"github.com/MIrrox27/REST-API/test"
 )
 
 func initDB() *sqlx.DB {
@@ -49,11 +50,14 @@ func initDB() *sqlx.DB {
 func main() {
 
 	db := initDB()
-	h = postgress.PostgresRepo{DB: db}
 
 	// 'defer' гарантирует, что соединение будет закрыто, когда main() завершит работу.
 	defer db.Close()
 
 	fmt.Println()
-	http.NewServer(h)
+	http.NewServer(nil)
+
+	fmt.Println("-----------должно все открыться")
+	//test.TestWebsocket()
+
 }

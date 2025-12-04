@@ -6,10 +6,11 @@ import (
 	//"database/sql"
 	"github.com/jmoiron/sqlx"
 	//"github.com/lib/pq"
+	//"github.com/MIrrox27/REST-API/internal/domain/chat"
 )
 
 type PostgresChat interface {
-	ReadMessages(message_id int, message string, user_id int)
+	ReadMessages(message_id int, message string, user_id int) *string
 	SaveMessages(message_id int, message string, user_id int)
 }
 
@@ -21,5 +22,9 @@ type PostgresRepo struct {
 }
 
 func SaveMessages() {
+
+}
+
+func ReadMessages() {
 
 }
