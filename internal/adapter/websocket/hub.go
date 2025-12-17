@@ -41,16 +41,5 @@ func WebsocketUpgrader(c *gin.Context) { // функцция которая аб
 	defer conn.Close()
 
 	// Пример простого эхо‑сервера.
-	for {
-		// Читаем сообщение от клиента.
-		mt, message, err := conn.ReadMessage()
-		if err != nil {
-			// Обычно клиент закрыл соединение.
-			break
-		}
-		// Отправляем то же сообщение обратно.
-		if err = conn.WriteMessage(mt, message); err != nil {
-			break
-		}
-	}
+
 }

@@ -17,7 +17,7 @@ func NewServer(h *service.ChatServiceImpl) { // в кпараметре полу
 
 	r := gin.Default()
 
-	Router(r, h)
+	Router(r)
 
 	if err := r.Run(":8080"); err != nil {
 		log.Fatal(err)
